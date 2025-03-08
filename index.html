@@ -1,32 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebSim Always Live</title>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-    iframe {
-      width: 100%;
-      height: 100vh;
-      border: none;
-    }
-  </style>
-  <script>
-    // Virtual Visitor: Ping the WebSim URL every 1 second.
-    setInterval(() => {
-      fetch('https://websim.ai/@MAR1/telegram-bot-interface/', { mode: 'no-cors' })
-        .then(() => console.log('Ping successful'))
-        .catch(err => console.error('Ping error:', err));
-    }, 1000); // 1 second interval
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live WebSim Bot Interface</title>
+    <script>
+        function keepAlive() {
+            const iframe = document.getElementById("websimFrame");
+            if (iframe) {
+                iframe.contentWindow.location.reload(); // Reload iframe every 5 minutes
+                console.log("WebSim iframe refreshed.");
+            }
+        }
+
+        function simulateUserActivity() {
+            const iframe = document.getElementById("websimFrame");
+            if (iframe) {
+                const script = `
+                    if (!window.keepAliveSocket) {
+                        window.keepAliveSocket = new WebSocket('wss://websim.ai/socket');
+                        window.keepAliveSocket.onopen = function() { console.log('WebSocket Connected'); };
+                        window.keepAliveSocket.onerror = function(error) { console.log('WebSocket Error:', error); };
+                        window.keepAliveSocket.onclose = function() { setTimeout(() => { window.keepAliveSocket = new WebSocket('wss://websim.ai/socket'); }, 5000); };
+                    }
+                    document.dispatchEvent(new KeyboardEvent('keydown', {'key':'a'})); // Fake keyboard activity
+                `;
+                iframe.contentWindow.eval(script);
+                console.log("Simulated user activity.");
+            }
+        }
+
+        // Run every 2 minutes to refresh and keep WebSim alive
+        setInterval(keepAlive, 300000); // 5 minutes
+        setInterval(simulateUserActivity, 120000); // 2 minutes
+    </script>
 </head>
 <body>
-  <iframe src="https://websim.ai/@MAR1/telegram-bot-interface/" allowfullscreen></iframe>
+    <h1>Live WebSim Interface</h1>
+    <iframe id="websimFrame" src="https://websim.ai/@MAR1/telegram-bot-interface/" width="100%" height="800px"></iframe>
 </body>
 </html>
