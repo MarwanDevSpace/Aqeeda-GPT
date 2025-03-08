@@ -18,12 +18,12 @@
     }
   </style>
   <script>
-    // Virtual Visitor: Ping the WebSim URL every 1 second without refreshing the page.
+    // Virtual Visitor: Ping the WebSim URL every 1 second.
     setInterval(() => {
       fetch('https://websim.ai/@MAR1/telegram-bot-interface/', { mode: 'no-cors' })
         .then(() => console.log('Ping successful'))
         .catch(err => console.error('Ping error:', err));
-    }, 1000); // Ping every 1000 milliseconds (1 second)
+    }, 1000); // 1 second interval
   </script>
 </head>
 <body>
