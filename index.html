@@ -2,21 +2,22 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>WebSim Popup with Sandbox iFrame</title>
+  <title>Fullscreen Sandbox iFrame</title>
   <style>
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
+      background: #f0f0f0;
     }
-    /* Fullscreen modal styling */
+    /* Fullscreen overlay for the popup */
     #popupOverlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.6);
+      background: rgba(0,0,0,0.8);
       display: none;
       justify-content: center;
       align-items: center;
@@ -52,35 +53,58 @@
   </style>
 </head>
 <body>
-  <button id="openPopupButton">Open WebSim Chat</button>
-
+  <!-- Button to trigger the popup -->
+  <button id="openPopupButton">Open WebSim in Fullscreen</button>
+  
+  <!-- Popup overlay container -->
   <div id="popupOverlay">
     <div id="popupWindow">
       <button id="closeButton">Close</button>
-      <!-- Notice the sandbox attribute here -->
-      <iframe src="https://websim.ai/@MAR1/sonnet-3-7-ai-chat/" 
-              sandbox="allow-scripts allow-same-origin" 
+      <!-- Sandbox the iframe with fullscreen enabled -->
+      <iframe id="websimIframe" 
+              src="https://websim.ai/@MAR1/sonnet-3-7-ai-chat/" 
+              sandbox="allow-scripts allow-same-origin allow-popups" 
+              allowfullscreen 
               width="100%" 
               height="100%" 
               frameborder="0">
       </iframe>
     </div>
   </div>
-
+  
   <script>
+    // Open the popup and request fullscreen
     function openPopup() {
-      document.getElementById('popupOverlay').style.display = 'flex';
+      const overlay = document.getElementById('popupOverlay');
+      overlay.style.display = 'flex';
+      // Request fullscreen on the overlay
+      if (overlay.requestFullscreen) {
+        overlay.requestFullscreen();
+      } else if (overlay.webkitRequestFullscreen) { // Safari
+        overlay.webkitRequestFullscreen();
+      } else if (overlay.msRequestFullscreen) { // IE11
+        overlay.msRequestFullscreen();
+      }
     }
-
+    
+    // Close the popup and exit fullscreen
     function closePopup() {
-      document.getElementById('popupOverlay').style.display = 'none';
+      const overlay = document.getElementById('popupOverlay');
+      overlay.style.display = 'none';
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) { // Safari
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { // IE11
+        document.msExitFullscreen();
+      }
     }
-
-    // Optionally auto-open if a login flag exists
+    
+    // Optionally, automatically open if a login flag is set (requires user gesture)
     if (localStorage.getItem('websimLoggedIn')) {
-      openPopup();
+      document.getElementById('openPopupButton').click();
     }
-
+    
     document.getElementById('openPopupButton').addEventListener('click', openPopup);
     document.getElementById('closeButton').addEventListener('click', closePopup);
   </script>
