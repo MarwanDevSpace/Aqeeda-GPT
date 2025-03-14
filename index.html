@@ -2,9 +2,14 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>WebSim Popup</title>
+  <title>WebSim Popup with Sandbox iFrame</title>
   <style>
-    /* Basic styles for full-screen modal overlay */
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    /* Fullscreen modal styling */
     #popupOverlay {
       position: fixed;
       top: 0;
@@ -12,7 +17,7 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.6);
-      display: none;  /* hidden by default */
+      display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
@@ -25,7 +30,6 @@
       overflow: hidden;
       position: relative;
     }
-    /* Close button styles */
     #closeButton {
       position: absolute;
       top: 10px;
@@ -39,7 +43,6 @@
       font-size: 16px;
       z-index: 1100;
     }
-    /* Button to open the popup */
     #openPopupButton {
       padding: 10px 20px;
       font-size: 16px;
@@ -49,36 +52,36 @@
   </style>
 </head>
 <body>
-  <!-- Button to trigger the popup -->
   <button id="openPopupButton">Open WebSim Chat</button>
 
-  <!-- Modal overlay -->
   <div id="popupOverlay">
     <div id="popupWindow">
       <button id="closeButton">Close</button>
-      <iframe src="https://websim.ai/@MAR1/sonnet-3-7-ai-chat/" width="100%" height="100%" frameborder="0"></iframe>
+      <!-- Notice the sandbox attribute here -->
+      <iframe src="https://websim.ai/@MAR1/sonnet-3-7-ai-chat/" 
+              sandbox="allow-scripts allow-same-origin" 
+              width="100%" 
+              height="100%" 
+              frameborder="0">
+      </iframe>
     </div>
   </div>
 
   <script>
-    // Function to open the popup modal
     function openPopup() {
       document.getElementById('popupOverlay').style.display = 'flex';
     }
 
-    // Function to close the popup modal
     function closePopup() {
       document.getElementById('popupOverlay').style.display = 'none';
     }
 
-    // Example: Automatically open popup if a login flag exists (set elsewhere in your app)
+    // Optionally auto-open if a login flag exists
     if (localStorage.getItem('websimLoggedIn')) {
       openPopup();
     }
 
-    // Event listener for the open button
     document.getElementById('openPopupButton').addEventListener('click', openPopup);
-    // Event listener for the close button
     document.getElementById('closeButton').addEventListener('click', closePopup);
   </script>
 </body>
